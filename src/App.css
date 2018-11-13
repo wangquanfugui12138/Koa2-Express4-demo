@@ -1,0 +1,22 @@
+.body{
+  min-height: 100vh;
+}
+.App {
+  padding: 50px;
+  background: #fff;
+  min-height: calc(100vh - 133px);
+}
+.item{
+  padding: 5px;
+  cursor: pointer;
+  color: #000;
+  font-size: 16px;
+  transition: all .3 ease-in;
+  -webkit-transition: all .3 ease-in;
+  -moz-transition: all .3 ease-in;
+  -ms-transition: all .3 ease-in;
+  -o-transition: all .3 ease-in;
+}  
+.item:hover{
+  text-decoration: line-through;
+}
