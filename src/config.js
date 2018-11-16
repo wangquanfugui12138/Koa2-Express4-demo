@@ -2,7 +2,7 @@ import axios from 'axios';
 import { message } from 'antd';
 
 // 拦截请求
-axios.interceptors.request.use(async config => await config, err => {
+axios.interceptors.request.use(config => config, err => {
     message.error('请求失败')
     return Promise.reject(err)
 })

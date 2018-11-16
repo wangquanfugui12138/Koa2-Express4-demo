@@ -1,24 +1,24 @@
 require('./db')
+
 const path = require('path')
 const Koa = require('koa')
-// const pm2 = require('pm2')
-// const fs = require('fs')
-const router = require('koa-router')()
 const koaStatic = require('koa-static')
+const router = require('koa-router')()
 const koaBody = require('koa-body')
-// const compose = require('koa-compose')
 const cors = require('koa2-cors')
+
 const Todo = require("./db").Todo
+
 const app = new Koa()
 const whiteList = ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001']
 
 app.use(koaStatic(
-    path.join(__dirname, '../build/')
+    path.join(__dirname, '..','/build/')
 ))
 
-app.use((ctx, next) => {
+app.use(async (ctx, next) => {
     console.log(`接收到${ctx.request.method}方法，请求地址为${ctx.request.url}`)
-    next()
+    await next()
 })
 
 router.get('/todoList',
@@ -72,17 +72,17 @@ router.del('/todoList/:name',
 )
 
 app.use(cors({
-    maxAge: 1000 * 60 * 60 * 24 * 356,
+    maxAge: 3600,
     credentials: true,//允许携带cookie
     allowMethods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT'],
     allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Custom-Header', 'anonymous'],
     origin: ctx => {
-        if (whiteList.indexOf(ctx.origin) < 0) return false
+        if (whiteList.indexOf(ctx.request.header.origin) === -1) return false
 
-        return '*'
+        return ctx.request.header.origin
     },
 }))
 
-app.use(router.routes())
+app.use(router.routes()).use(router.allowedMethods())
 
 app.listen(3001, () => console.log('listen 3001 now'))

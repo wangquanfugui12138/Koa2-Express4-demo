@@ -26,7 +26,7 @@ app.use(express.static(
 ))
 
 app.use((req, res, next) => {
-    console.log(`接收到${req.method}方法，请求地址为${req.url}`)
+    console.log(`接收到${req.method}方法，请求域名为${req.headers.origin}，请求地址为${req.url}`)
     next()
 })
 
