@@ -12,7 +12,7 @@ class App extends Component {
       <Layout>
         <Routers />
         <Footer style={{color:'silver',textAlign:'center'}}>
-          Copyright © Yuk·Jo 2018/11/8
+          Copyright © Yuk·Jo 2018/11
         </Footer>
       </Layout>
     )

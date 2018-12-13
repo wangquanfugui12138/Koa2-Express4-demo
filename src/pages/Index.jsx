@@ -17,6 +17,7 @@ class Index extends Component {
   }
   getData = async () => {
     const data = await axios.get(`http://localhost:3001/todoList`)
+
     this.setState({ filteredData: data.data, isLoading: false })
     !data.success && message.error('获取todoList失败！')
   }

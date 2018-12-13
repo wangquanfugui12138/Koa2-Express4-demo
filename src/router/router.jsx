@@ -13,7 +13,10 @@ const Contact = Loadable({
     loader: () => import('../pages/Contact'),
     loading: MyLoadingComponent
 })
-
+const NotFound = Loadable({
+    loader: () => import('../pages/404'),
+    loading: MyLoadingComponent
+})
 
 class routers extends Component {
     render() {
@@ -24,6 +27,7 @@ class routers extends Component {
                     <Switch>
                         <Route exact path="/" component={Index} />
                         <Route exact path="/contact" component={Contact} />
+                        <Route component={NotFound} />
                     </Switch>
                 </div>
             </Router>
