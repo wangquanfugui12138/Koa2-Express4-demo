@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Menu } from 'antd'
+import { Menu,message } from 'antd'
 import { Link,withRouter } from 'react-router-dom'
 
 const routerConfig = [
@@ -25,6 +25,7 @@ class Nav extends Component {
   setRoute = () => {
     this.props.history.listen(location => {
       const { pathname } = location
+
       routerConfig.forEach(item => pathname.indexOf(item.key) >= 0 && this.setState({ key: [item.key] }))
     })
   }

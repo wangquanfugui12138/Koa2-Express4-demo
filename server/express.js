@@ -3,13 +3,16 @@ const fs = require('fs')
 const path = require('path')
 const express = require('express')
 const Todo = require('./db').Todo
+const User = require('./db').User
 const bodyParser = require('body-parser')
 const multer = require('multer')
 const upload = multer({ dest: '/src/upload' })
 const archiver = require('archiver')
+const jwt =require('jsonwebtoken')
 
 const app = new express()
 const whiteList = ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001']
+const privateKey="zyk" // 这是加密的key（密钥） 
 
 const allowCrossDomain = (req, res, next) => {
     if (whiteList.indexOf(req.headers.origin) >= 0) {
@@ -21,6 +24,7 @@ const allowCrossDomain = (req, res, next) => {
     }
     next()
 }
+const tokenIsVal = token =>jwt.verify(token, privateKey, (err, decode)=> !err )
 
 app.use(allowCrossDomain)
     .use(bodyParser.json())
@@ -34,10 +38,11 @@ app.use(allowCrossDomain)
     })
 
 app.all('*',
-    (req, res, next) => {
+    async (req, res, next) => {
         if (req.method === "OPTIONS") {
-            res.status(200)
-            res.end()
+            res.status(200).end()
+        } else if(req.method === "POST" && req.url !=='/login'){
+            tokenIsVal(req.body.token) ? next(): res.status(401).json({success:false})   
         } else {
             next()
         }
@@ -79,26 +84,6 @@ app.all('*',
         }, 0);
         
     }
-).post('/upload', upload.any(),
-    (req, res, next) => {
-        try {
-            const files = req.files
-            console.log(files)
-            files.length ?
-                files.forEach(file =>
-                    fs
-                        .createReadStream(file.path)
-                        .pipe(fs.createWriteStream(`${file.mimetype.indexOf('image') >= 0 ? 'src/assets/upload/imgs' : 'src/assets/upload/files'}/${file.originalname}`))
-                ) :
-                fs
-                    .createReadStream(files.path)
-                    .pipe(fs.createWriteStream(`${files.mimetype.indexOf('image') >= 0 ? 'src/assets/upload/imgs' : 'src/assets/upload/files'}/${files.originalname}`))
-
-            res.json({ err: 'upload success', success: false })
-        } catch (e) {
-            res.json({ err: 'upload failed', success: false })
-        }
-    }
 ).get('/todoList',
     async (req, res, next) => {
         try {
@@ -118,6 +103,49 @@ app.all('*',
             res.json({ data, success: true })
         } catch (e) {
             res.json({ data: [], success: false })
+        }
+    }
+).post('/login',
+    async (req, res) => {
+        const data = await User.findOne({username:req.body.username,password: req.body.password})
+        if(data){
+            res.json({token:data.token, success: true })    
+        }else{   
+            const content ={username:req.body.username} // 要生成token的主题信息
+            const token = jwt.sign(content, privateKey, {
+                    expiresIn: 60*60*1,  // 1小时过期
+                })  
+            
+            const user = new User({...req.body,token,createDate:Date.now()})
+            user.save(function(err){
+                if (err) {
+                    res.status(500).json({success:false})
+                    return
+                }
+                
+                res.json({token, success: true })
+            })  
+        }
+ 
+    }
+).post('/upload', upload.any(),
+    (req, res, next) => {
+        try {
+            const files = req.files
+
+            files.length ?
+                files.forEach(file =>
+                    fs
+                        .createReadStream(file.path)
+                        .pipe(fs.createWriteStream(`${file.mimetype.indexOf('image') >= 0 ? 'src/assets/upload/imgs' : 'src/assets/upload/files'}/${file.originalname}`))
+                ) :
+                fs
+                    .createReadStream(files.path)
+                    .pipe(fs.createWriteStream(`${files.mimetype.indexOf('image') >= 0 ? 'src/assets/upload/imgs' : 'src/assets/upload/files'}/${files.originalname}`))
+
+            res.json({ err: 'upload success', success: false })
+        } catch (e) {
+            res.json({ err: 'upload failed', success: false })
         }
     }
 ).post('/todoList',

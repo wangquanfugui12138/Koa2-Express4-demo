@@ -54,7 +54,6 @@ router.get('/downloadFile/:name',
         ctx.set('Content-disposition', `attachment;filename=${ctx.params.name}`);
         const paths = `src/assets/upload/files/${ctx.params.name}`
 
-        //const data = new Buffer(`123`) // 发送内容为123的文件  
         const data = fs.createReadStream(paths) // 发送路径文件内容的文件
 
         ctx.body = data
@@ -146,23 +145,6 @@ router.get('/downloadFile/:name',
         }
     }
 )
-// app.use(koaBody({
-//     multipart: true,
-//     formidable: {
-//         maxFileSize: 200 * 1024 * 1024,// 设置上传文件大小最大限制，默认2M
-//     }
-// }));
-// app.use(cors({
-//     maxAge: 3600,
-//     credentials: true,//允许携带cookie
-//     allowMethods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT'],
-//     allowHeaders: ['Origin', 'Content-Type', 'Authorization', 'Accept', 'X-Custom-Header', 'anonymous', 'X-Requested-With'],
-//     origin: ctx => {
-//         if (whiteList.indexOf(ctx.request.header.origin) === -1) return false
-
-//         return ctx.request.header.origin
-//     },
-// }))
 
 app.use(router.routes())
     .use(router.allowedMethods())

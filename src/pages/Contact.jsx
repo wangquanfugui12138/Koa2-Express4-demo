@@ -16,6 +16,10 @@ const props = {
     if (status === 'done') {
       message.success(`${info.file.name} file uploaded successfully.`)
     } else if (status === 'error') {
+      if(info.file.error.status === 401) {
+        message.warning('请先登录')
+        window.location.href = `/login?next=${window.location.pathname}` 
+      }
       message.error(`${info.file.name} file upload failed.`)
     }
   },
@@ -24,6 +28,9 @@ const props = {
 class Contact extends Component {
   state = {
     img:''
+  }
+  componentWillUnmount(){
+    this.setState=()=>{}
   }
   outdoor = async () =>{
     await axios.get(`http://localhost:3001/out`)

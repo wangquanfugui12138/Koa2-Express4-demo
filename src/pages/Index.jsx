@@ -11,6 +11,9 @@ class Index extends Component {
     }
     this.nameInput = React.createRef()
   }
+  componentWillUnmount(){
+    this.setState=()=>{}
+  }
   componentDidMount() {
     this.nameInput.current.focus()
     this.getData()
@@ -47,7 +50,7 @@ class Index extends Component {
 
     const data = await axios.get(`http://localhost:3001/todoList/${this.nameInput.current.input.value}`)
 
-    !data.data.length ? message.success('该名称不存在') : message.warning(`共有${data.data.length}个结果`)
+    !data.data.length ? message.warning('该名称不存在') : message.success(`共有${data.data.length}个结果`)
   }
   delete = async e => {
     e.preventDefault()
