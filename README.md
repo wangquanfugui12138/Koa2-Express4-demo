@@ -46,3 +46,4 @@ localhost:3001
 - [x] mongoose数据库操作
 - [x] 增删查
 - [x] jwt登录、路由鉴权
+- [x] Svg配合Dom实现脑图
