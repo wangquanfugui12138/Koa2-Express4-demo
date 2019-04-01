@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Menu,message } from 'antd'
-import { Link,withRouter } from 'react-router-dom'
+import { Menu, message } from 'antd'
+import { Link, withRouter } from 'react-router-dom'
 
 const routerConfig = [
   {
@@ -9,6 +9,9 @@ const routerConfig = [
   }, {
     key: 'contact',
     title: '联系客服'
+  }, {
+    key: 'svg',
+    title: '测试'
   },
 ]
 class Nav extends Component {
@@ -18,7 +21,7 @@ class Nav extends Component {
       key: ['/'],
     }
   }
-  componentDidMount() {
+  componentDidMount () {
     this.setRoute()
     this.freshPageSetRoute()
   }
@@ -33,26 +36,26 @@ class Nav extends Component {
     const { pathname } = this.props.history.location
     routerConfig.forEach(item => pathname.indexOf(item.key) >= 0 && this.setState({ key: [item.key] }))
   }
-  render() {
+  render () {
     const { key } = this.state
 
     return (
       <Menu
-            theme="dark"
-            mode="horizontal"
-            selectedKeys={key}
-            style={{ lineHeight: '64px' }}
-          >
-            {
-              routerConfig.map(item =>
-                <Menu.Item key={item.key}>
-                  {item.title}
-                  <Link className='link' to={item.key} />
-                </Menu.Item>)
-            }
-          </Menu>
+        theme="dark"
+        mode="horizontal"
+        selectedKeys={key}
+        style={{ lineHeight: '64px' }}
+      >
+        {
+          routerConfig.map(item =>
+            <Menu.Item key={item.key}>
+              {item.title}
+              <Link className='link' to={item.key} />
+            </Menu.Item>)
+        }
+      </Menu>
     )
-      
+
   }
 }
 
